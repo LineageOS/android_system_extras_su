@@ -30,7 +30,6 @@
 #include <getopt.h>
 #include <stdint.h>
 #include <pwd.h>
-#include <sys/stat.h>
 #include <stdarg.h>
 #include <sys/types.h>
 #include <log/log.h>
@@ -434,7 +433,6 @@ int su_main(int argc, char *argv[], int need_client) {
             .name = "",
         },
     };
-    struct stat st;
     int c, socket_serv_fd, fd;
     char buf[64], *result;
     policy_t dballow;
@@ -533,12 +531,6 @@ int su_main(int argc, char *argv[], int need_client) {
     // the latter two are necessary for stock ROMs like note 2 which do dumb things with su, or crash otherwise
     if (ctx.from.uid == AID_ROOT) {
         ALOGD("Allowing root/system/radio.");
-        allow(&ctx, NULL);
-    }
-
-    // always allow if this is the superuser uid
-    // superuser needs to be able to reenable itself when disabled...
-    if (ctx.from.uid == st.st_uid) {
         allow(&ctx, NULL);
     }
 
