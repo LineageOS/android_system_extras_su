@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1f2f7f8d_5ee49dac",
+        "filename": "daemon.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 14340
+      },
+      "writtenOn": "2015-11-10T06:22:01Z",
+      "side": 1,
+      "message": "The problem with daemon_from_pid is that there\u0027s no real way to validate it as currently implemented. The process that made su request could have exited already. It could just always be set to credentials.pid unconditionally but that\u0027s different than how it works right now.\n\nEither way, that process can exit at any time and be replaced by another with the same PID. So it doesn\u0027t mean much.",
+      "parentUuid": "1f2f7f8d_be2ca147",
+      "range": {
+        "startLine": 295,
+        "startChar": 4,
+        "endLine": 295,
+        "endChar": 19
+      },
+      "revId": "cb1bff6504882cce1f477b1010142744b67674bc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1f2f7f8d_beba61db",
         "filename": "daemon.c",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2015-11-10T05:01:27Z",
       "side": 1,
       "message": "Actually, this can go into main. We don\u0027t run su setuid at all, the client should probably be killed if someone tampered with the perms.",
+      "revId": "cb1bff6504882cce1f477b1010142744b67674bc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1f2f7f8d_be602134",
+        "filename": "daemon.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 530,
+      "author": {
+        "id": 14340
+      },
+      "writtenOn": "2015-11-10T06:22:01Z",
+      "side": 1,
+      "message": "True. I didn\u0027t realize +s was already gone.",
+      "parentUuid": "1f2f7f8d_beba61db",
       "revId": "cb1bff6504882cce1f477b1010142744b67674bc",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
