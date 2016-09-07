@@ -82,6 +82,7 @@ int get_property(const char *data, char *found, const char *searchkey, const cha
             break;
         }
     }
+    free(sol);
     int len;
     if (matched) {
         len = strlen(value);
