@@ -12,9 +12,10 @@ LOCAL_SRC_FILES += binder/appops-wrapper.cpp binder/pm-wrapper.c
 LOCAL_CFLAGS += -Werror
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
 
-LOCAL_INIT_RC := superuser.rc
-
 include $(BUILD_EXECUTABLE)
+
+ifeq($(WITH_SU),true)
+LOCAL_INIT_RC := superuser.rc
 
 SYMLINKS := $(addprefix $(TARGET_OUT)/bin/,su)
 $(SYMLINKS):
@@ -22,6 +23,7 @@ $(SYMLINKS):
 	@mkdir -p $(dir $@)
 	@rm -rf $@
 	$(hide) ln -sf ../xbin/su $@
+endif
 
 # We need this so that the installed files could be picked up based on the
 # local module name
