@@ -9,7 +9,7 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_WHOLE_STATIC_LIBRARIES := libcutils libutils libbinder liblog
 LOCAL_SRC_FILES := su.c daemon.c utils.c pts.c
 LOCAL_SRC_FILES += binder/appops-wrapper.cpp binder/pm-wrapper.c
-LOCAL_CFLAGS += -Werror
+LOCAL_CFLAGS += -Werror -Wall
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
 include $(BUILD_EXECUTABLE)
 

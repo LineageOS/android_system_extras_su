@@ -437,9 +437,7 @@ int su_main(int argc, char *argv[], int need_client) {
             .name = "",
         },
     };
-    int c, socket_serv_fd, fd;
-    char buf[64], *result;
-    policy_t dballow;
+    int c;
     struct option long_opts[] = {
         { "command",            required_argument,    NULL, 'c' },
         { "help",            no_argument,        NULL, 'h' },
