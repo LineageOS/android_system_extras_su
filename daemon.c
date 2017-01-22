@@ -273,9 +273,6 @@ static int run_daemon_child(int infd, int outfd, int errfd, int argc, char** arg
 }
 
 static int daemon_accept(int fd) {
-    char mypath[PATH_MAX], remotepath[PATH_MAX];
-    int caller_is_self = 0;
-
     is_daemon = 1;
     int pid = read_int(fd);
     int child_result;
