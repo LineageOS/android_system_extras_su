@@ -10,12 +10,17 @@ LOCAL_WHOLE_STATIC_LIBRARIES := libcutils libutils libbinder liblog
 LOCAL_SRC_FILES := su.c daemon.c utils.c pts.c
 LOCAL_SRC_FILES += binder/appops-wrapper.cpp binder/pm-wrapper.c
 LOCAL_CFLAGS += -Werror
+ifeq ($(WITH_SU),true)
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
+else
+LOCAL_MODULE_PATH := $(OUT)/extra
+endif
 
 LOCAL_INIT_RC := superuser.rc
 
 include $(BUILD_EXECUTABLE)
 
+ifeq ($(WITH_SU),true)
 SYMLINKS := $(addprefix $(TARGET_OUT)/bin/,su)
 $(SYMLINKS):
 	@echo "Symlink: $@ -> /system/xbin/su"
@@ -27,4 +32,5 @@ $(SYMLINKS):
 # local module name
 ALL_MODULES.$(LOCAL_MODULE).INSTALLED := \
     $(ALL_MODULES.$(LOCAL_MODULE).INSTALLED) $(SYMLINKS)
+endif
 
