@@ -360,7 +360,7 @@ static int daemon_accept(int fd) {
 
         // Pass the return code back to the client
         ALOGD("sending code");
-        if (send(fd, &code, sizeof(int), MSG_NOSIGNAL) != sizeof(int)) {
+        if (write(fd, &code, sizeof(int)) != sizeof(int)) {
             PLOGE("unable to write exit code");
         }
 
