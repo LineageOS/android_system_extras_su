@@ -267,14 +267,24 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
         fprintf(stderr, "Cannot execute %s: %s\n", binary, strerror(err));
         exit(EXIT_FAILURE);
     } else {
-        int status;
+        int status, code;
 
         ALOGD("Waiting for pid %d.", pid);
-        waitpid(pid, &status, 0);
+        if (waitpid(pid, &status, 0) > 0) {
+            ALOGD("waiting return status %d", status);
+            code = WEXITSTATUS(status);
+        }
+        else {
+            ALOGE("waitpid failed! errno  %d", errno);
+            code = -1;
+        }
+
         if (packageName) {
             appops_finish_op_su(ctx->from.uid, packageName);
         }
-        exit(status);
+        ALOGD("Waiting return code %d.", code);
+
+        exit(code);
     }
 }
 
