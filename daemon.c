@@ -370,9 +370,8 @@ error:
         return code;
     }
 
-    // We are in the child now
-    // Close the unix socket file descriptor
-    close (fd);
+    // this is a pipe, parent still need use, child process can't close 
+    //close (fd);
 
     // Become session leader
     if (setsid() == (pid_t) -1) {
