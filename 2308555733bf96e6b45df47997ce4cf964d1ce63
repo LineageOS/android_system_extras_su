@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a279e3e0_898d19dd",
+        "filename": "daemon.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 13897
+      },
+      "writtenOn": "2017-09-13T07:19:50Z",
+      "side": 1,
+      "message": "Care to explain why this is needed? The file descriptor is duplicated when we fork(), so closing it in the child shouldn\u0027t affect the parent.",
+      "range": {
+        "startLine": 374,
+        "startChar": 4,
+        "endLine": 374,
+        "endChar": 17
+      },
+      "revId": "2308555733bf96e6b45df47997ce4cf964d1ce63",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a53da9e_7885347c",
+        "filename": "su.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 13897
+      },
+      "writtenOn": "2017-09-13T07:19:50Z",
+      "side": 1,
+      "message": "What about errno here?",
+      "range": {
+        "startLine": 278,
+        "startChar": 19,
+        "endLine": 278,
+        "endChar": 21
+      },
+      "revId": "2308555733bf96e6b45df47997ce4cf964d1ce63",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
