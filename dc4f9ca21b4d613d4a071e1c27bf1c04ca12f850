@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f1e7b7f5_288d05c0",
+        "filename": "su.c",
+        "patchSetId": 5
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 13897
+      },
+      "writtenOn": "2017-10-11T21:16:14Z",
+      "side": 1,
+      "message": "This one also is never freed explicitly.",
+      "range": {
+        "startLine": 237,
+        "startChar": 8,
+        "endLine": 237,
+        "endChar": 28
+      },
+      "revId": "dc4f9ca21b4d613d4a071e1c27bf1c04ca12f850",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
