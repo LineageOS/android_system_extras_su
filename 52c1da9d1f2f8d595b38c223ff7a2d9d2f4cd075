@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "be1e66ef_42061af1",
+        "filename": "su.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 13897
+      },
+      "writtenOn": "2017-10-11T20:33:25Z",
+      "side": 1,
+      "message": "This is not enough since allow() calls exit() (but this means that probably the OS will take care of freeing the memory for us).",
+      "range": {
+        "startLine": 556,
+        "startChar": 0,
+        "endLine": 556,
+        "endChar": 22
+      },
+      "revId": "52c1da9d1f2f8d595b38c223ff7a2d9d2f4cd075",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
