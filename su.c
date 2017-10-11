@@ -206,6 +206,7 @@ static __attribute__ ((noreturn)) void deny(struct su_context *ctx) {
 }
 
 static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char *packageName) {
+    char *arg0_malloc = NULL;
     char *arg0;
     int argc, err;
 
@@ -234,14 +235,14 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
     arg0 = (arg0) ? arg0 + 1 : binary;
     if (ctx->to.login) {
         int s = strlen(arg0) + 2;
-        char *p = malloc(s);
+        arg0_malloc = malloc(s);
 
-        if (!p)
+        if (!arg0_malloc)
             exit(EXIT_FAILURE);
 
-        *p = '-';
-        strcpy(p + 1, arg0);
-        arg0 = p;
+        *arg0_malloc = '-';
+        strcpy(arg0_malloc + 1, arg0);
+        arg0 = arg0_malloc;
     }
 
     populate_environment(ctx);
@@ -265,6 +266,12 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
         err = errno;
         PLOGE("exec");
         fprintf(stderr, "Cannot execute %s: %s\n", binary, strerror(err));
+        if (packageName) {
+            free(packageName);
+        }
+        if (arg0_malloc) {
+            free(arg0_malloc);
+        }
         exit(EXIT_FAILURE);
     } else {
         int status, code;
@@ -276,6 +283,10 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
 
         if (packageName) {
             appops_finish_op_su(ctx->from.uid, packageName);
+            free(packageName);
+        }
+        if (arg0_malloc) {
+            free(arg0_malloc);
         }
         exit(code);
     }
