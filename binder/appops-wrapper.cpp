@@ -13,6 +13,8 @@ int appops_start_op_su(int uid, const char *pkgName) {
 
     int mode = ops->startOp(AppOpsManager::OP_SU, uid, String16(pkgName));
 
+    delete ops;
+
     switch (mode) {
         case AppOpsManager::MODE_ALLOWED:
           ALOGD("Privilege elevation allowed by appops");
@@ -21,8 +23,6 @@ int appops_start_op_su(int uid, const char *pkgName) {
           ALOGD("Privilege elevation denied by appops");
           return 1;
     }
-
-    delete ops;
 }
 
 void appops_finish_op_su(int uid, const char *pkgName) {
