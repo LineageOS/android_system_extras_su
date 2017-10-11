@@ -265,6 +265,9 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
         err = errno;
         PLOGE("exec");
         fprintf(stderr, "Cannot execute %s: %s\n", binary, strerror(err));
+        if (packageName) {
+            free(packageName);
+        }
         exit(EXIT_FAILURE);
     } else {
         int status, code;
@@ -276,6 +279,7 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
 
         if (packageName) {
             appops_finish_op_su(ctx->from.uid, packageName);
+            free(packageName);
         }
         exit(code);
     }

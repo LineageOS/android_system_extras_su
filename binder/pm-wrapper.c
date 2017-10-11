@@ -46,5 +46,5 @@ const char* resolve_package_name(int uid) {
     free(packages);
 
 notfound:
-    return "";
+    return strdup("");
 }
