@@ -18,6 +18,7 @@
  */
 const char* resolve_package_name(int uid) {
     char *packages = read_file(PACKAGE_LIST_PATH);
+    const char *package_name = NULL;
 
     if (packages == NULL) {
         goto notfound;
@@ -37,14 +38,20 @@ const char* resolve_package_name(int uid) {
                 char *endptr;
                 errno = 0;
                 int pkgUidInt = strtoul(pkgUid, &endptr, 10);
-                if ((errno == 0 && endptr != NULL && !(*endptr)) && pkgUidInt == uid)
-                    return strdup(pkgName);
+                if ((errno == 0 && endptr != NULL && !(*endptr)) && pkgUidInt == uid) {
+                    package_name = strdup(pkgName);
+                    break;
+                }
             }
         }
         p = ++line_end;
     }
     free(packages);
 
+    if (package_name) {
+        return package_name;
+    }
+
 notfound:
-    return "";
+    return strdup("");
 }
