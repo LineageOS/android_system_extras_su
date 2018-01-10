@@ -363,8 +363,9 @@ static void fork_for_samsung(void)
 }
 
 int main(int argc, char *argv[]) {
-    if (getuid() != geteuid()) {
-        ALOGE("must not be a setuid binary");
+    uid_t current_uid = getuid();
+    if (current_uid != AID_ROOT && current_uid != AID_SHELL) {
+        ALOGE("not allowed to call su with UID %u", current_uid);
         return 1;
     }
 
