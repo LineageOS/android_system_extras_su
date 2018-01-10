@@ -363,11 +363,6 @@ static void fork_for_samsung(void)
 }
 
 int main(int argc, char *argv[]) {
-    if (getuid() != geteuid()) {
-        ALOGE("must not be a setuid binary");
-        return 1;
-    }
-
     return su_main(argc, argv, 1);
 }
 
