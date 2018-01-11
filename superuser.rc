@@ -1,3 +1,6 @@
+on post-fs
+    chmod +x /system/xbin/su
+
 # su daemon
 service su_daemon /system/xbin/su --daemon
     user root
