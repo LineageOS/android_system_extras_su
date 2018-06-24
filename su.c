@@ -295,13 +295,14 @@ int access_disabled(const struct su_initiator *from) {
     size_t len;
 
     data = read_file("/system/build.prop");
-    if (check_property(data, "ro.cm.version")) {
+    if (check_property(data, "ro.lineage.version")) {
         get_property(data, build_type, "ro.build.type", "");
         free(data);
 
         data = read_file("/default.prop");
         get_property(data, debuggable, "ro.debuggable", "0");
         free(data);
+
         /* only allow su on debuggable builds */
         if (strcmp("1", debuggable) != 0) {
             ALOGE("Root access is disabled on non-debug builds");
@@ -336,8 +337,13 @@ int access_disabled(const struct su_initiator *from) {
             return 1;
         }
 
+        return 0;
+
+    } else {
+        /* If used on Non-LineageOS builds or older than 15.1 */
+        ALOGE("Only use the LineageOS 15.1 su AddOn on LineageOS 15.1 builds!");
+        return 1;
     }
-    return 0;
 }
 
 static void fork_for_samsung(void)
