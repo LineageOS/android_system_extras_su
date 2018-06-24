@@ -295,48 +295,53 @@ int access_disabled(const struct su_initiator *from) {
     size_t len;
 
     data = read_file("/system/build.prop");
-    if (check_property(data, "ro.cm.version")) {
-        get_property(data, build_type, "ro.build.type", "");
+    /* only allow su on Lineage 15.1 (or newer) builds */
+    if (!(check_property(data, "ro.lineage.version"))) {
         free(data);
-
-        data = read_file("/default.prop");
-        get_property(data, debuggable, "ro.debuggable", "0");
-        free(data);
-        /* only allow su on debuggable builds */
-        if (strcmp("1", debuggable) != 0) {
-            ALOGE("Root access is disabled on non-debug builds");
-            return 1;
-        }
-
-        data = read_file("/data/property/persist.sys.root_access");
-        if (data != NULL) {
-            len = strlen(data);
-            if (len >= PROPERTY_VALUE_MAX)
-                memcpy(enabled, "0", 2);
-            else
-                memcpy(enabled, data, len + 1);
-            free(data);
-        } else
-            memcpy(enabled, "0", 2);
-
-        /* enforce persist.sys.root_access on non-eng builds for apps */
-        if (strcmp("eng", build_type) != 0 &&
-                from->uid != AID_SHELL && from->uid != AID_ROOT &&
-                (atoi(enabled) & CM_ROOT_ACCESS_APPS_ONLY) != CM_ROOT_ACCESS_APPS_ONLY ) {
-            ALOGE("Apps root access is disabled by system setting - "
-                 "enable it under settings -> developer options");
-            return 1;
-        }
-
-        /* disallow su in a shell if appropriate */
-        if (from->uid == AID_SHELL &&
-                (atoi(enabled) & CM_ROOT_ACCESS_ADB_ONLY) != CM_ROOT_ACCESS_ADB_ONLY ) {
-            ALOGE("Shell root access is disabled by a system setting - "
-                 "enable it under settings -> developer options");
-            return 1;
-        }
-
+        ALOGE("Root access disabled on Non-Lineage builds");
+        return 1;
     }
+
+    get_property(data, build_type, "ro.build.type", "");
+    free(data);
+
+    data = read_file("/default.prop");
+    get_property(data, debuggable, "ro.debuggable", "0");
+    free(data);
+    /* only allow su on debuggable builds */
+    if (strcmp("1", debuggable) != 0) {
+        ALOGE("Root access is disabled on non-debug builds");
+        return 1;
+    }
+
+    data = read_file("/data/property/persist.sys.root_access");
+    if (data != NULL) {
+        len = strlen(data);
+        if (len >= PROPERTY_VALUE_MAX)
+            memcpy(enabled, "0", 2);
+        else
+            memcpy(enabled, data, len + 1);
+        free(data);
+    } else
+        memcpy(enabled, "0", 2);
+
+    /* enforce persist.sys.root_access on non-eng builds for apps */
+    if (strcmp("eng", build_type) != 0 &&
+            from->uid != AID_SHELL && from->uid != AID_ROOT &&
+            (atoi(enabled) & CM_ROOT_ACCESS_APPS_ONLY) != CM_ROOT_ACCESS_APPS_ONLY ) {
+        ALOGE("Apps root access is disabled by system setting - "
+             "enable it under settings -> developer options");
+        return 1;
+    }
+
+    /* disallow su in a shell if appropriate */
+    if (from->uid == AID_SHELL &&
+            (atoi(enabled) & CM_ROOT_ACCESS_ADB_ONLY) != CM_ROOT_ACCESS_ADB_ONLY ) {
+        ALOGE("Shell root access is disabled by a system setting - "
+             "enable it under settings -> developer options");
+        return 1;
+    }
+
     return 0;
 }
 
