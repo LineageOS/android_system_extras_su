@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d2c8f65_651c2c23",
+        "filename": "su.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5503
+      },
+      "writtenOn": "2018-06-27T19:13:03Z",
+      "side": 1,
+      "message": "Please remove added line.",
+      "revId": "b70d1c77e2d582693dcce39c312ed4e2723f02f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db2d9152_f8ea553b",
+        "filename": "su.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 5503
+      },
+      "writtenOn": "2018-06-27T19:13:03Z",
+      "side": 1,
+      "message": "Perhaps \"Root access disabled on non-Lineage builds\"?",
+      "revId": "b70d1c77e2d582693dcce39c312ed4e2723f02f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be5155cd_09baf71b",
+        "filename": "su.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 5503
+      },
+      "writtenOn": "2018-06-27T19:13:03Z",
+      "side": 1,
+      "message": "data from /system/build.prop is leaked here.  I think this function really needs a refactor.",
+      "revId": "b70d1c77e2d582693dcce39c312ed4e2723f02f9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
