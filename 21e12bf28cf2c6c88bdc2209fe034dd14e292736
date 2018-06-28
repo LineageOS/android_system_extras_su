@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bcf11fb5_0652702c",
+        "filename": "su.c",
+        "patchSetId": 5
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2018-06-28T05:00:52Z",
+      "side": 1,
+      "message": "I would say don\u0027t even bother with the else block, and leave the fall-through to return 1 in case of any cases that got missed. Alternately, check for ro.lineage.version and error out early.",
+      "range": {
+        "startLine": 341,
+        "startChar": 4,
+        "endLine": 341,
+        "endChar": 12
+      },
+      "revId": "21e12bf28cf2c6c88bdc2209fe034dd14e292736",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
