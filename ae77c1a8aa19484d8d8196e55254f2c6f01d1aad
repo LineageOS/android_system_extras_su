@@ -46,6 +46,30 @@
       "revId": "ae77c1a8aa19484d8d8196e55254f2c6f01d1aad",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd05288e_3f1f5c46",
+        "filename": "su.c",
+        "patchSetId": 6
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2018-07-03T19:00:33Z",
+      "side": 1,
+      "message": "That\u0027s a fair point. I just saw the green due to the indent while scrolling through.",
+      "parentUuid": "c61ebaaa_0b65f1e0",
+      "range": {
+        "startLine": 323,
+        "startChar": 12,
+        "endLine": 323,
+        "endChar": 43
+      },
+      "revId": "ae77c1a8aa19484d8d8196e55254f2c6f01d1aad",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
