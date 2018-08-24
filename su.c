@@ -558,6 +558,7 @@ int su_main(int argc, char *argv[], int need_client) {
         ALOGD("Allowing via appops.");
         allow(&ctx, packageName);
     }
+    free(packageName);
 
     ALOGE("Allow chain exhausted, denying request");
     deny(&ctx);

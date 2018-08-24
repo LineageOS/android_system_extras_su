@@ -38,6 +38,7 @@ const char* resolve_package_name(int uid) {
                 errno = 0;
                 int pkgUidInt = strtoul(pkgUid, &endptr, 10);
                 if ((errno == 0 && endptr != NULL && !(*endptr)) && pkgUidInt == uid)
+                    free(packages);
                     return strdup(pkgName);
             }
         }

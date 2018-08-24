@@ -8,6 +8,8 @@ using namespace android;
 extern "C" {
 
 int appops_start_op_su(int uid, const char *pkgName) {
+    int ret;
+
     ALOGD("Checking whether app [uid:%d, pkgName: %s] is allowed to be root", uid, pkgName);
     AppOpsManager *ops = new AppOpsManager();
 
@@ -16,13 +18,16 @@ int appops_start_op_su(int uid, const char *pkgName) {
     switch (mode) {
         case AppOpsManager::MODE_ALLOWED:
           ALOGD("Privilege elevation allowed by appops");
-          return 0;
+          ret = 0;
+          break;
         default:
           ALOGD("Privilege elevation denied by appops");
-          return 1;
+          ret = 1;
+          break;
     }
 
     delete ops;
+    return ret;
 }
 
 void appops_finish_op_su(int uid, const char *pkgName) {
