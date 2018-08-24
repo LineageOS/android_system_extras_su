@@ -16,11 +16,12 @@
  * Since packages may share UID, this function will return the first present
  * in packages.list.
  */
-const char* resolve_package_name(int uid) {
+char* resolve_package_name(int uid) {
+    char *package_name = NULL;
     char *packages = read_file(PACKAGE_LIST_PATH);
 
     if (packages == NULL) {
-        goto notfound;
+        return NULL;
     }
 
     char *p = packages;
@@ -37,14 +38,15 @@ const char* resolve_package_name(int uid) {
                 char *endptr;
                 errno = 0;
                 int pkgUidInt = strtoul(pkgUid, &endptr, 10);
-                if ((errno == 0 && endptr != NULL && !(*endptr)) && pkgUidInt == uid)
-                    return strdup(pkgName);
+                if ((errno == 0 && endptr != NULL && !(*endptr)) && pkgUidInt == uid) {
+                    package_name = strdup(pkgName);
+                    break;
+                }
             }
         }
         p = ++line_end;
     }
-    free(packages);
 
-notfound:
-    return "";
+    free(packages);
+    return package_name;
 }

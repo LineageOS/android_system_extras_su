@@ -150,6 +150,9 @@ static void send_fd(int sockfd, int fd) {
             msg.msg_controllen = sizeof(cmsgbuf);
 
             struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
+            if (!cmsg) {
+                goto error;
+            }
 
             cmsg->cmsg_len   = CMSG_LEN(sizeof(int));
             cmsg->cmsg_level = SOL_SOCKET;
@@ -305,6 +308,10 @@ static int daemon_accept(int fd) {
     }
     ALOGV("remote args: %d", argc);
     char** argv = (char**)malloc(sizeof(char*) * (argc + 1));
+    if (!argv) {
+        ALOGE("unable to allocate memory\n");
+        exit(-1);
+    }
     argv[argc] = NULL;
     int i;
     for (i = 0; i < argc; i++) {
