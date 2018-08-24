@@ -76,7 +76,7 @@ static int from_init(struct su_initiator *from) {
     }
 
     /* Get the command line */
-    snprintf(path, sizeof(path), "/proc/%u/cmdline", from->pid);
+    snprintf(path, sizeof(path), "/proc/%u/cmdline", (unsigned)from->pid);
     fd = open(path, O_RDONLY);
     if (fd < 0) {
         PLOGE("Opening command line");
@@ -113,14 +113,14 @@ static int from_init(struct su_initiator *from) {
     }
 
     /* If this isn't app_process, use the real path instead of argv[0] */
-    snprintf(path, sizeof(path), "/proc/%u/exe", from->pid);
+    snprintf(path, sizeof(path), "/proc/%u/exe", (unsigned)from->pid);
     len = readlink(path, exe, sizeof(exe));
     if (len < 0) {
         PLOGE("Getting exe path");
         return -1;
     }
     exe[len] = '\0';
-    if (strcmp(exe, "/system/bin/app_process")) {
+    if (strcmp(exe, "/system/bin/app_process") != 0) {
         argv0 = exe;
     }
 
@@ -500,7 +500,7 @@ int su_main(int argc, char *argv[], int need_client) {
         optind++;
     }
     /* username or uid */
-    if (optind < argc && strcmp(argv[optind], "--")) {
+    if (optind < argc && strcmp(argv[optind], "--") != 0) {
         struct passwd *pw;
         pw = getpwnam(argv[optind]);
         if (!pw) {
@@ -554,10 +554,13 @@ int su_main(int argc, char *argv[], int need_client) {
         allow(&ctx, NULL);
     }
 
-    const char *packageName = resolve_package_name(ctx.from.uid);
-    if (!appops_start_op_su(ctx.from.uid, packageName)) {
-        ALOGD("Allowing via appops.");
-        allow(&ctx, packageName);
+    char *packageName = resolve_package_name(ctx.from.uid);
+    if (packageName) {
+        if (!appops_start_op_su(ctx.from.uid, packageName)) {
+            ALOGD("Allowing via appops.");
+            allow(&ctx, packageName);
+        }
+        free(packageName);
     }
 
     ALOGE("Allow chain exhausted, denying request");
