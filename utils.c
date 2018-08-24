@@ -59,6 +59,8 @@ int get_property(const char *data, char *found, const char *searchkey, const cha
     if (data == NULL) goto defval;
     int matched = 0;
     char *dup = strdup(data);
+    if (!dup)
+        goto defval;
 
     sol = dup;
     while((eol = strchr(sol, '\n'))) {
