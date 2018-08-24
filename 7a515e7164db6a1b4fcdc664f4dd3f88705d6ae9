@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0fbffaf_fc568936",
+        "filename": "su.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 1063
+      },
+      "writtenOn": "2018-08-24T19:23:12Z",
+      "side": 1,
+      "message": "Can we actually reach this? deny() being called right below seems to imply we can\u0027t.",
+      "revId": "7a515e7164db6a1b4fcdc664f4dd3f88705d6ae9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
