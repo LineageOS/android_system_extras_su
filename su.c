@@ -16,27 +16,17 @@
 ** limitations under the License.
 */
 
-#include <fcntl.h>
 #include <getopt.h>
-#include <limits.h>
 #include <pwd.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <sys/select.h>
-#include <sys/socket.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 #include <sys/types.h>
-#include <sys/uio.h>
-#include <sys/un.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <cutils/android_filesystem_config.h>
 #include <cutils/properties.h>
 #include <log/log.h>
-#include <private/android_filesystem_config.h>
 
 #include "binder/pm-wrapper.h"
 #include "su.h"
