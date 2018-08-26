@@ -1,7 +1,7 @@
 #define LOG_TAG "su"
 
 #include <binder/AppOpsManager.h>
-#include <utils/Log.h>
+#include <log/log.h>
 
 using android::AppOpsManager;
 using android::String16;
