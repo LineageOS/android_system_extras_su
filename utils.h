@@ -17,13 +17,7 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
-#ifndef PROPERTY_VALUE_MAX
-#define PROPERTY_VALUE_MAX 92
-#endif
-
 /* reads a file, making sure it is terminated with \n \0 */
 extern char* read_file(const char* fn);
 
-extern int get_property(const char* data, char* found, const char* searchkey, const char* not_found);
-extern int check_property(const char* data, const char* prefix);
 #endif
