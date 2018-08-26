@@ -17,31 +17,17 @@
 
 #define _GNU_SOURCE /* for unshare() */
 
-#include <fcntl.h>
-#include <getopt.h>
-#include <limits.h>
-#include <log/log.h>
-#include <pthread.h>
-#include <pwd.h>
-#include <sched.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/mount.h>
-#include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <sys/wait.h>
-#include <termios.h>
 #include <unistd.h>
 
 #include <cutils/multiuser.h>
+#include <log/log.h>
 
 #include "pts.h"
 #include "su.h"
