@@ -1,12 +1,12 @@
-#include "../utils.h"
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <utils/Log.h>
+#include "../utils.h"
 
 #define PACKAGE_LIST_PATH "/data/system/packages.list"
-#define PACKAGE_NAME_MAX_LEN (1<<16)
+#define PACKAGE_NAME_MAX_LEN (1 << 16)
 
 /* Tries to resolve a package name from a uid via the packages list file.
  *
@@ -17,25 +17,24 @@
  * in packages.list.
  */
 char* resolve_package_name(int uid) {
-    char *package_name = NULL;
-    char *packages = read_file(PACKAGE_LIST_PATH);
+    char* package_name = NULL;
+    char* packages = read_file(PACKAGE_LIST_PATH);
 
     if (packages == NULL) {
         return NULL;
     }
 
-    char *p = packages;
+    char* p = packages;
     while (*p) {
-        char *line_end = strstr(p, "\n");
-        if (line_end == NULL)
-            break;
+        char* line_end = strstr(p, "\n");
+        if (line_end == NULL) break;
 
-        char *token;
-        char *pkgName = strtok_r(p, " ", &token);
+        char* token;
+        char* pkgName = strtok_r(p, " ", &token);
         if (pkgName != NULL) {
-            char *pkgUid = strtok_r(NULL, " ", &token);
+            char* pkgUid = strtok_r(NULL, " ", &token);
             if (pkgUid != NULL) {
-                char *endptr;
+                char* endptr;
                 errno = 0;
                 int pkgUidInt = strtoul(pkgUid, &endptr, 10);
                 if ((errno == 0 && endptr != NULL && !(*endptr)) && pkgUidInt == uid) {
