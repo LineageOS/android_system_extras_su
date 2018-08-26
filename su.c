@@ -64,7 +64,7 @@ static int from_init(struct su_initiator* from) {
     }
 
     /* Get the command line */
-    snprintf(path, sizeof(path), "/proc/%u/cmdline", (unsigned)from->pid);
+    snprintf(path, sizeof(path), "/proc/%d/cmdline", from->pid);
     fd = open(path, O_RDONLY);
     if (fd < 0) {
         PLOGE("Opening command line");
@@ -101,7 +101,7 @@ static int from_init(struct su_initiator* from) {
     }
 
     /* If this isn't app_process, use the real path instead of argv[0] */
-    snprintf(path, sizeof(path), "/proc/%u/exe", (unsigned)from->pid);
+    snprintf(path, sizeof(path), "/proc/%d/exe", from->pid);
     len = readlink(path, exe, sizeof(exe));
     if (len < 0) {
         PLOGE("Getting exe path");

@@ -155,7 +155,7 @@ static void send_fd(int sockfd, int fd) {
 static int read_int(int fd) {
     int val;
     int len = read(fd, &val, sizeof(int));
-    if (len != (int)sizeof(int)) {
+    if (len != sizeof(int)) {
         ALOGE("unable to read int: %d", len);
         exit(-1);
     }
