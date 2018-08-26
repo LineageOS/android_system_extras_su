@@ -240,7 +240,7 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
             exit(EXIT_FAILURE);
 
         *p = '-';
-        strcpy(p + 1, arg0);
+        strlcpy(p + 1, arg0, sizeof(p + 1));
         arg0 = p;
     }
 
