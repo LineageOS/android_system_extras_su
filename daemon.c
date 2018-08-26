@@ -34,9 +34,9 @@ int daemon_from_uid = 0;
 int daemon_from_pid = 0;
 
 // Constants for the atty bitfield
-#define ATTY_IN     1
-#define ATTY_OUT    2
-#define ATTY_ERR    4
+#define ATTY_IN 1
+#define ATTY_OUT 2
+#define ATTY_ERR 4
 
 /*
  * Receive a file descriptor from a Unix socket.
@@ -53,15 +53,15 @@ static int recv_fd(int sockfd) {
 
     struct iovec iov = {
         .iov_base = &iovbuf,
-        .iov_len  = 1,
+        .iov_len = 1,
     };
 
     char cmsgbuf[CMSG_SPACE(sizeof(int))];
 
     struct msghdr msg = {
-        .msg_iov        = &iov,
-        .msg_iovlen     = 1,
-        .msg_control    = cmsgbuf,
+        .msg_iov = &iov,
+        .msg_iovlen = 1,
+        .msg_control = cmsgbuf,
         .msg_controllen = sizeof(cmsgbuf),
     };
 
@@ -71,25 +71,26 @@ static int recv_fd(int sockfd) {
 
     // Was a control message actually sent?
     switch (msg.msg_controllen) {
-    case 0:
-        // No, so the file descriptor was closed and won't be used.
-        return -1;
-    case sizeof(cmsgbuf):
-        // Yes, grab the file descriptor from it.
-        break;
-    default:
+        case 0:
+            // No, so the file descriptor was closed and won't be used.
+            return -1;
+        case sizeof(cmsgbuf):
+            // Yes, grab the file descriptor from it.
+            break;
+        default:
+            goto error;
+    }
+
+    struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
+
+    if (cmsg == NULL ||
+        cmsg->cmsg_len != CMSG_LEN(sizeof(int)) ||
+        cmsg->cmsg_level != SOL_SOCKET ||
+        cmsg->cmsg_type != SCM_RIGHTS) {
         goto error;
     }
 
-    struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
-
-    if (cmsg             == NULL                  ||
-        cmsg->cmsg_len   != CMSG_LEN(sizeof(int)) ||
-        cmsg->cmsg_level != SOL_SOCKET            ||
-        cmsg->cmsg_type  != SCM_RIGHTS) {
-    }
-
-    return *(int *)CMSG_DATA(cmsg);
+    return *(int*)CMSG_DATA(cmsg);
 
 error:
     ALOGE("unable to read fd");
@@ -109,12 +110,12 @@ static void send_fd(int sockfd, int fd) {
     // Need to send some data in the message, this will do.
     struct iovec iov = {
         .iov_base = "",
-        .iov_len  = 1,
+        .iov_len = 1,
     };
 
     struct msghdr msg = {
-        .msg_iov        = &iov,
-        .msg_iovlen     = 1,
+        .msg_iov = &iov,
+        .msg_iovlen = 1,
     };
 
     char cmsgbuf[CMSG_SPACE(sizeof(int))];
@@ -128,19 +129,19 @@ static void send_fd(int sockfd, int fd) {
             // It's closed, don't send a control message or sendmsg will EBADF.
         } else {
             // It's open, send the file descriptor in a control message.
-            msg.msg_control    = cmsgbuf;
+            msg.msg_control = cmsgbuf;
             msg.msg_controllen = sizeof(cmsgbuf);
 
-            struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
+            struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
             if (!cmsg) {
                 goto error;
             }
 
-            cmsg->cmsg_len   = CMSG_LEN(sizeof(int));
+            cmsg->cmsg_len = CMSG_LEN(sizeof(int));
             cmsg->cmsg_level = SOL_SOCKET;
-            cmsg->cmsg_type  = SCM_RIGHTS;
+            cmsg->cmsg_type = SCM_RIGHTS;
 
-            *(int *)CMSG_DATA(cmsg) = fd;
+            *(int*)CMSG_DATA(cmsg) = fd;
         }
     }
 
@@ -231,7 +232,7 @@ static int daemon_accept(int fd) {
     int pid = read_int(fd);
     int child_result;
     ALOGD("remote pid: %d", pid);
-    char *pts_slave = read_string(fd);
+    char* pts_slave = read_string(fd);
     ALOGD("remote pts_slave: %s", pts_slave);
     daemon_from_pid = read_int(fd);
     ALOGV("remote req pid: %d", daemon_from_pid);
@@ -247,7 +248,7 @@ static int daemon_accept(int fd) {
     daemon_from_uid = credentials.uid;
 
     // The the FDs for each of the streams
-    int infd  = recv_fd(fd);
+    int infd = recv_fd(fd);
     int outfd = recv_fd(fd);
     int errfd = recv_fd(fd);
 
@@ -303,8 +304,7 @@ static int daemon_accept(int fd) {
         ALOGD("waiting for child exit");
         if (waitpid(child, &status, 0) > 0) {
             code = WEXITSTATUS(status);
-        }
-        else {
+        } else {
             code = -1;
         }
 
@@ -328,10 +328,10 @@ static int daemon_accept(int fd) {
 
     // We are in the child now
     // Close the unix socket file descriptor
-    close (fd);
+    close(fd);
 
     // Become session leader
-    if (setsid() == (pid_t) -1) {
+    if (setsid() == (pid_t)-1) {
         PLOGE("setsid");
     }
 
@@ -362,9 +362,9 @@ static int daemon_accept(int fd) {
             exit(-1);
         }
 
-        if (infd < 0)  {
+        if (infd < 0) {
             ALOGD("daemon: stdin using PTY");
-            infd  = ptsfd;
+            infd = ptsfd;
         }
         if (outfd < 0) {
             ALOGD("daemon: stdout using PTY");
@@ -443,8 +443,7 @@ int run_daemon() {
         if (fork_zero_fucks() == 0) {
             close(fd);
             return daemon_accept(client);
-        }
-        else {
+        } else {
             close(client);
         }
     }
@@ -456,9 +455,9 @@ err:
 }
 
 // List of signals which cause process termination
-static int quit_signals[] = { SIGALRM, SIGHUP, SIGPIPE, SIGQUIT, SIGTERM, SIGINT, 0 };
+static int quit_signals[] = {SIGALRM, SIGHUP, SIGPIPE, SIGQUIT, SIGTERM, SIGINT, 0};
 
-static void sighandler(__attribute__ ((unused)) int sig) {
+static void sighandler(__attribute__((unused)) int sig) {
     restore_stdin();
 
     // Assume we'll only be called before death
@@ -487,7 +486,7 @@ static void sighandler(__attribute__ ((unused)) int sig) {
 
 /**
  * Setup signal handlers trap signals which should result in program termination
- * so that we can restore the terminal to its normal state and retrieve the 
+ * so that we can restore the terminal to its normal state and retrieve the
  * return code.
  */
 static void setup_sighandlers(void) {
@@ -508,7 +507,7 @@ static void setup_sighandlers(void) {
     }
 }
 
-int connect_daemon(int argc, char *argv[], int ppid) {
+int connect_daemon(int argc, char* argv[], int ppid) {
     int ptmx = -1;
     char pts_slave[PATH_MAX];
 
@@ -541,7 +540,7 @@ int connect_daemon(int argc, char *argv[], int ppid) {
 
     // TODO: Check a system property and never use PTYs if
     // the property is set.
-    if (isatty(STDIN_FILENO))  atty |= ATTY_IN;
+    if (isatty(STDIN_FILENO)) atty |= ATTY_IN;
     if (isatty(STDOUT_FILENO)) atty |= ATTY_OUT;
     if (isatty(STDERR_FILENO)) atty |= ATTY_ERR;
 

@@ -18,6 +18,6 @@
 #define _UTILS_H_
 
 /* reads a file, making sure it is terminated with \n \0 */
-extern char* read_file(const char *fn);
+extern char* read_file(const char* fn);
 
 #endif

@@ -42,15 +42,13 @@ int fork_zero_fucks() {
         int status;
         waitpid(pid, &status, 0);
         return pid;
-    }
-    else {
-        if ((pid = fork()))
-            exit(0);
+    } else {
+        if ((pid = fork())) exit(0);
         return 0;
     }
 }
 
-static int from_init(struct su_initiator *from) {
+static int from_init(struct su_initiator* from) {
     char path[PATH_MAX], exe[PATH_MAX];
     char args[4096], *argv0, *argv_rest;
     int fd;
@@ -86,7 +84,7 @@ static int from_init(struct su_initiator *from) {
     for (i = 0; i < len; i++) {
         if (args[i] == '\0') {
             if (!argv_rest) {
-                argv_rest = &args[i+1];
+                argv_rest = &args[i + 1];
             } else {
                 args[i] = ' ';
             }
@@ -120,7 +118,7 @@ static int from_init(struct su_initiator *from) {
         return -1;
     }
 
-    struct passwd *pw;
+    struct passwd* pw;
     pw = getpwuid(from->uid);
     if (pw && pw->pw_name) {
         if (strlcpy(from->name, pw->pw_name, sizeof(from->name)) >= sizeof(from->name)) {
@@ -132,11 +130,10 @@ static int from_init(struct su_initiator *from) {
     return 0;
 }
 
-static void populate_environment(const struct su_context *ctx) {
-    struct passwd *pw;
+static void populate_environment(const struct su_context* ctx) {
+    struct passwd* pw;
 
-    if (ctx->to.keepenv)
-        return;
+    if (ctx->to.keepenv) return;
 
     pw = getpwuid(ctx->to.uid);
     if (pw) {
@@ -172,64 +169,61 @@ void set_identity(unsigned int uid) {
 }
 
 static void usage(int status) {
-    FILE *stream = (status == EXIT_SUCCESS) ? stdout : stderr;
+    FILE* stream = (status == EXIT_SUCCESS) ? stdout : stderr;
 
     fprintf(stream,
-    "Usage: su [options] [--] [-] [LOGIN] [--] [args...]\n\n"
-    "Options:\n"
-    "  --daemon                      start the su daemon agent\n"
-    "  -c, --command COMMAND         pass COMMAND to the invoked shell\n"
-    "  -h, --help                    display this help message and exit\n"
-    "  -, -l, --login                pretend the shell to be a login shell\n"
-    "  -m, -p,\n"
-    "  --preserve-environment        do not change environment variables\n"
-    "  -s, --shell SHELL             use SHELL instead of the default " DEFAULT_SHELL "\n"
-    "  -v, --version                 display version number and exit\n"
-    "  -V                            display version code and exit,\n"
-    "                                this is used almost exclusively by Superuser.apk\n");
+            "Usage: su [options] [--] [-] [LOGIN] [--] [args...]\n\n"
+            "Options:\n"
+            "  --daemon                      start the su daemon agent\n"
+            "  -c, --command COMMAND         pass COMMAND to the invoked shell\n"
+            "  -h, --help                    display this help message and exit\n"
+            "  -, -l, --login                pretend the shell to be a login shell\n"
+            "  -m, -p,\n"
+            "  --preserve-environment        do not change environment variables\n"
+            "  -s, --shell SHELL             use SHELL instead of the default " DEFAULT_SHELL
+            "\n"
+            "  -v, --version                 display version number and exit\n"
+            "  -V                            display version code and exit,\n"
+            "                                this is used almost exclusively by Superuser.apk\n");
     exit(status);
 }
 
-static __attribute__ ((noreturn)) void deny(struct su_context *ctx) {
-    char *cmd = get_command(&ctx->to);
+static __attribute__((noreturn)) void deny(struct su_context* ctx) {
+    char* cmd = get_command(&ctx->to);
     ALOGW("request rejected (%u->%u %s)", ctx->from.uid, ctx->to.uid, cmd);
     fprintf(stderr, "%s\n", strerror(EACCES));
     exit(EXIT_FAILURE);
 }
 
-static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char *packageName) {
-    char *arg0;
+static __attribute__((noreturn)) void allow(struct su_context* ctx, const char* packageName) {
+    char* arg0;
     int argc, err;
 
     umask(ctx->umask);
 
-    char *binary;
+    char* binary;
     argc = ctx->to.optind;
     if (ctx->to.command) {
         binary = ctx->to.shell;
         ctx->to.argv[--argc] = ctx->to.command;
         ctx->to.argv[--argc] = "-c";
-    }
-    else if (ctx->to.shell) {
+    } else if (ctx->to.shell) {
         binary = ctx->to.shell;
-    }
-    else {
+    } else {
         if (ctx->to.argv[argc]) {
             binary = ctx->to.argv[argc++];
-        }
-        else {
+        } else {
             binary = DEFAULT_SHELL;
         }
     }
 
-    arg0 = strrchr (binary, '/');
+    arg0 = strrchr(binary, '/');
     arg0 = (arg0) ? arg0 + 1 : binary;
     if (ctx->to.login) {
         int s = strlen(arg0) + 2;
-        char *p = malloc(s);
+        char* p = malloc(s);
 
-        if (!p)
-            exit(EXIT_FAILURE);
+        if (!p) exit(EXIT_FAILURE);
 
         *p = '-';
         strcpy(p + 1, arg0);
@@ -239,15 +233,13 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
     populate_environment(ctx);
     set_identity(ctx->to.uid);
 
-#define PARG(arg)                                    \
-    (argc + (arg) < ctx->to.argc) ? " " : "",                    \
-    (argc + (arg) < ctx->to.argc) ? ctx->to.argv[argc + (arg)] : ""
+#define PARG(arg)                             \
+    (argc + (arg) < ctx->to.argc) ? " " : "", \
+        (argc + (arg) < ctx->to.argc) ? ctx->to.argv[argc + (arg)] : ""
 
-    ALOGD("%u %s executing %u %s using binary %s : %s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-            ctx->from.uid, ctx->from.bin,
-            ctx->to.uid, get_command(&ctx->to), binary,
-            arg0, PARG(0), PARG(1), PARG(2), PARG(3), PARG(4), PARG(5),
-            (ctx->to.optind + 6 < ctx->to.argc) ? " ..." : "");
+    ALOGD("%u %s executing %u %s using binary %s : %s%s%s%s%s%s%s%s%s%s%s%s%s%s", ctx->from.uid,
+          ctx->from.bin, ctx->to.uid, get_command(&ctx->to), binary, arg0, PARG(0), PARG(1),
+          PARG(2), PARG(3), PARG(4), PARG(5), (ctx->to.optind + 6 < ctx->to.argc) ? " ..." : "");
 
     ctx->to.argv[--argc] = arg0;
 
@@ -314,7 +306,7 @@ int access_disabled(const struct su_initiator* from) {
     return 0;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     if (getuid() != geteuid()) {
         ALOGE("must not be a setuid binary");
         return 1;
@@ -323,7 +315,7 @@ int main(int argc, char *argv[]) {
     return su_main(argc, argv, 1);
 }
 
-int su_main(int argc, char *argv[], int need_client) {
+int su_main(int argc, char* argv[], int need_client) {
     // start up in daemon mode if prompted
     if (argc == 2 && strcmp(argv[1], "--daemon") == 0) {
         return run_daemon();
@@ -362,8 +354,8 @@ int su_main(int argc, char *argv[], int need_client) {
         // not listed in linker, used due to system() call
         "IFS",
     };
-    const char* const* cp   = unsec_vars;
-    const char* const* endp = cp + sizeof(unsec_vars)/sizeof(unsec_vars[0]);
+    const char* const* cp = unsec_vars;
+    const char* const* endp = cp + sizeof(unsec_vars) / sizeof(unsec_vars[0]);
     while (cp < endp) {
         unsetenv(*cp);
         cp++;
@@ -372,65 +364,67 @@ int su_main(int argc, char *argv[], int need_client) {
     ALOGD("su invoked.");
 
     struct su_context ctx = {
-        .from = {
-            .pid = -1,
-            .uid = 0,
-            .bin = "",
-            .args = "",
-            .name = "",
-        },
-        .to = {
-            .uid = AID_ROOT,
-            .login = 0,
-            .keepenv = 0,
-            .shell = NULL,
-            .command = NULL,
-            .argv = argv,
-            .argc = argc,
-            .optind = 0,
-            .name = "",
-        },
+        .from =
+            {
+                .pid = -1,
+                .uid = 0,
+                .bin = "",
+                .args = "",
+                .name = "",
+            },
+        .to =
+            {
+                .uid = AID_ROOT,
+                .login = 0,
+                .keepenv = 0,
+                .shell = NULL,
+                .command = NULL,
+                .argv = argv,
+                .argc = argc,
+                .optind = 0,
+                .name = "",
+            },
     };
     int c;
     struct option long_opts[] = {
-        { "command",            required_argument,    NULL, 'c' },
-        { "help",            no_argument,        NULL, 'h' },
-        { "login",            no_argument,        NULL, 'l' },
-        { "preserve-environment",    no_argument,        NULL, 'p' },
-        { "shell",            required_argument,    NULL, 's' },
-        { "version",            no_argument,        NULL, 'v' },
-        { NULL, 0, NULL, 0 },
+        {"command", required_argument, NULL, 'c'},
+        {"help", no_argument, NULL, 'h'},
+        {"login", no_argument, NULL, 'l'},
+        {"preserve-environment", no_argument, NULL, 'p'},
+        {"shell", required_argument, NULL, 's'},
+        {"version", no_argument, NULL, 'v'},
+        {NULL, 0, NULL, 0},
     };
 
     while ((c = getopt_long(argc, argv, "+c:hlmps:Vv", long_opts, NULL)) != -1) {
-        switch(c) {
-        case 'c':
-            ctx.to.shell = DEFAULT_SHELL;
-            ctx.to.command = optarg;
-            break;
-        case 'h':
-            usage(EXIT_SUCCESS);
-            break;
-        case 'l':
-            ctx.to.login = 1;
-            break;
-        case 'm':
-        case 'p':
-            ctx.to.keepenv = 1;
-            break;
-        case 's':
-            ctx.to.shell = optarg;
-            break;
-        case 'V':
-            printf("%d\n", VERSION_CODE);
-            exit(EXIT_SUCCESS);
-        case 'v':
-            printf("%s\n", VERSION);
-            exit(EXIT_SUCCESS);
-        default:
-            /* Bionic getopt_long doesn't terminate its error output by newline */
-            fprintf(stderr, "\n");
-            usage(2);
+        switch (c) {
+            case 'c':
+                ctx.to.shell = DEFAULT_SHELL;
+                ctx.to.command = optarg;
+                break;
+            case 'h':
+                usage(EXIT_SUCCESS);
+                break;
+            case 'l':
+                ctx.to.login = 1;
+                break;
+            case 'm':
+            case 'p':
+                ctx.to.keepenv = 1;
+                break;
+            case 's':
+                ctx.to.shell = optarg;
+                break;
+            case 'V':
+                printf("%d\n", VERSION_CODE);
+                exit(EXIT_SUCCESS);
+            case 'v':
+                printf("%s\n", VERSION);
+                exit(EXIT_SUCCESS);
+            default:
+                /* Bionic getopt_long doesn't terminate its error output by newline */
+                fprintf(stderr, "\n");
+                usage(2);
         }
     }
 
@@ -446,10 +440,10 @@ int su_main(int argc, char *argv[], int need_client) {
     }
     /* username or uid */
     if (optind < argc && strcmp(argv[optind], "--") != 0) {
-        struct passwd *pw;
+        struct passwd* pw;
         pw = getpwnam(argv[optind]);
         if (!pw) {
-            char *endptr;
+            char* endptr;
 
             /* It seems we shouldn't do this at all */
             errno = 0;
@@ -493,7 +487,7 @@ int su_main(int argc, char *argv[], int need_client) {
         allow(&ctx, NULL);
     }
 
-    char *packageName = resolve_package_name(ctx.from.uid);
+    char* packageName = resolve_package_name(ctx.from.uid);
     if (packageName) {
         if (!appops_start_op_su(ctx.from.uid, packageName)) {
             ALOGD("Allowing via appops.");

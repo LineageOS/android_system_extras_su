@@ -22,10 +22,9 @@
 #include "utils.h"
 
 /* reads a file, making sure it is terminated with \n \0 */
-char* read_file(const char *fn)
-{
+char* read_file(const char* fn) {
     struct stat st;
-    char *data = NULL;
+    char* data = NULL;
 
     int fd = open(fn, O_RDONLY);
     if (fd < 0) return data;
