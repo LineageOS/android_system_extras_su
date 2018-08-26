@@ -24,6 +24,10 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
 
 LOCAL_INIT_RC := superuser.rc
 
+LOCAL_TIDY_FLAGS := -warnings-as-errors=clang-analyzer-security*,cert-*
+LOCAL_TIDY_CHECKS := -*,clang-analyzer-security*,cert-*
+LOCAL_TIDY := true
+
 include $(BUILD_EXECUTABLE)
 
 SYMLINKS := $(addprefix $(TARGET_OUT)/bin/,su)
