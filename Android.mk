@@ -6,17 +6,12 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := su
 LOCAL_MODULE_TAGS := optional
-LOCAL_WHOLE_STATIC_LIBRARIES := \
-    libasync_safe \
-    libbacktrace \
-    libbase \
+LOCAL_SHARED_LIBRARIES := \
     libbinder \
     libcutils \
     liblog \
-    liblzma \
-    libunwind \
     libutils \
-    libvndksupport
+
 LOCAL_SRC_FILES := su.c daemon.c utils.c pts.c
 LOCAL_SRC_FILES += binder/appops-wrapper.cpp binder/pm-wrapper.c
 LOCAL_CFLAGS += -Werror -Wall
