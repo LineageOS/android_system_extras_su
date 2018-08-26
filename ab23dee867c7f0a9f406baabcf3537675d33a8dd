@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f1351bf_491b6989",
+        "filename": "su.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1063
+      },
+      "writtenOn": "2018-08-26T12:57:35Z",
+      "side": 1,
+      "message": "sizeof(p) would be the size oft a pointer (4 or 8 bytes), and I\u0027m not even sure about sizeof(p + 1). You\u0027re sure you mean to use sizeof? Should rather pass \u0027s - 2\u0027 as argument here IMHO.\nBesides that, the usage of strcpy seems fine here as the target buffer is allocated for the size of arg0.",
+      "parentUuid": "",
+      "revId": "ab23dee867c7f0a9f406baabcf3537675d33a8dd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
