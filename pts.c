@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
- /*
+/*
  * pts.c
  *
  * Manages the pseudo-terminal driver on Linux/Android and provides some
  * helper functions to handle raw input mode and terminal window resizing
  */
 
+#include <errno.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <signal.h>
 #include <termios.h>
-#include <errno.h>
-#include <pthread.h>
+#include <unistd.h>
 
 #include "pts.h"
 
@@ -36,7 +36,7 @@
  * Helper functions
  */
 // Ensures all the data is written out
-static int write_blocking(int fd, char *buf, size_t bufsz) {
+static int write_blocking(int fd, char* buf, size_t bufsz) {
     ssize_t ret, written;
 
     written = 0;
@@ -91,7 +91,6 @@ static void pump_async(int input, int output) {
     pthread_create(&writer, NULL, pump_thread, files);
 }
 
-
 /**
  * pts_open
  *
@@ -105,7 +104,7 @@ static void pump_async(int input, int output) {
  * on failure either -2 or -1 (errno set) is returned.
  * on success, the file descriptor of the master device is returned.
  */
-int pts_open(char *slave_name, size_t slave_name_size) {
+int pts_open(char* slave_name, size_t slave_name_size) {
     int fdm;
     char sn_tmp[slave_name_size];
 
@@ -143,7 +142,7 @@ static int stdin_is_raw = 0;
 /**
  * set_stdin_raw
  *
- * Changes stdin to raw unbuffered mode, disables echo, 
+ * Changes stdin to raw unbuffered mode, disables echo,
  * auto carriage return, etc.
  *
  * Return Value
@@ -207,14 +206,14 @@ int restore_stdin(void) {
 static volatile int closing_time = 0;
 
 /**
- * Thread process. Wait for a SIGWINCH to be received, then update 
+ * Thread process. Wait for a SIGWINCH to be received, then update
  * the terminal size.
  */
-static void *watch_sigwinch(void *data) {
+static void* watch_sigwinch(void* data) {
     sigset_t winch;
     int sig;
-    int master = ((int *)data)[0];
-    int slave = ((int *)data)[1];
+    int master = ((int*)data)[0];
+    int slave = ((int*)data)[1];
 
     sigemptyset(&winch);
     sigaddset(&winch, SIGWINCH);
@@ -244,7 +243,7 @@ static void *watch_sigwinch(void *data) {
  * watch_sigwinch_async
  *
  * After calling this function, if the application receives
- * SIGWINCH, the terminal window size will be read from 
+ * SIGWINCH, the terminal window size will be read from
  * "input" and set on "output".
  *
  * NOTE: This function blocks SIGWINCH and spawns a thread.
@@ -258,13 +257,13 @@ static void *watch_sigwinch(void *data) {
  *
  * Return Value
  * on failure, -1 and errno will be set. In this case, no
- *      thread has been spawned and SIGWINCH will not be 
+ *      thread has been spawned and SIGWINCH will not be
  *      blocked.
  * on success, 0
  */
 int watch_sigwinch_async(int master, int slave) {
     pthread_t watcher;
-    int *files = (int *) malloc(sizeof(int) * 2);
+    int* files = (int*)malloc(sizeof(int) * 2);
     if (files == NULL) {
         return -1;
     }
