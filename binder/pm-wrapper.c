@@ -1,9 +1,9 @@
-#include "../utils.h"
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <utils/Log.h>
+
+#include "../utils.h"
 
 #define PACKAGE_LIST_PATH "/data/system/packages.list"
 #define PACKAGE_NAME_MAX_LEN (1<<16)

@@ -15,33 +15,19 @@
 ** limitations under the License.
 */
 
-#include <sys/types.h>
+#include <stdlib.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/un.h>
 #include <sys/wait.h>
-#include <sys/select.h>
-#include <sys/time.h>
 #include <unistd.h>
-#include <limits.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <getopt.h>
-#include <stdint.h>
-#include <pwd.h>
-#include <sys/stat.h>
-#include <stdarg.h>
-#include <sys/types.h>
-#include <pthread.h>
-#include <sched.h>
-#include <termios.h>
-#include <signal.h>
-#include <string.h>
+
 #include <log/log.h>
 
+#include "pts.h"
 #include "su.h"
 #include "utils.h"
-#include "pts.h"
 
 int is_daemon = 0;
 int daemon_from_uid = 0;
