@@ -19,8 +19,6 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <limits.h>
-#include <log/log.h>
-#include <private/android_filesystem_config.h>
 #include <pwd.h>
 #include <stdarg.h>
 #include <stdint.h>
@@ -35,6 +33,10 @@
 #include <sys/un.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+#include <cutils/properties.h>
+#include <log/log.h>
+#include <private/android_filesystem_config.h>
 
 #include "binder/pm-wrapper.h"
 #include "su.h"
@@ -273,53 +275,29 @@ static __attribute__((noreturn)) void allow(struct su_context* ctx, const char* 
     }
 }
 
-/*
- * Lineage-specific behavior
- *
- * we can't simply use the property service, since we aren't launched from init
- * and can't trust the location of the property workspace.
- * Find the properties ourselves.
- */
 int access_disabled(const struct su_initiator* from) {
-    char* data;
+    char lineage_version[PROPERTY_VALUE_MAX];
     char build_type[PROPERTY_VALUE_MAX];
-    char debuggable[PROPERTY_VALUE_MAX], enabled[PROPERTY_VALUE_MAX];
-    size_t len;
+    int enabled;
 
-    data = read_file("/system/build.prop");
-    /* only allow su on Lineage 15.1 (or newer) builds */
-    if (!(check_property(data, "ro.lineage.version"))) {
-        free(data);
+    /* Only allow su on Lineage builds */
+    property_get("ro.lineage.version", lineage_version, "");
+    if (!strcmp(lineage_version, "")) {
         ALOGE("Root access disabled on Non-Lineage builds");
         return 1;
     }
 
-    get_property(data, build_type, "ro.build.type", "");
-    free(data);
-
-    data = read_file("/default.prop");
-    get_property(data, debuggable, "ro.debuggable", "0");
-    free(data);
-    /* only allow su on debuggable builds */
-    if (strcmp("1", debuggable) != 0) {
+    /* Only allow su on debuggable builds */
+    if (!property_get_bool("ro.debuggable", false)) {
         ALOGE("Root access is disabled on non-debug builds");
         return 1;
     }
 
-    data = read_file("/data/property/persist.sys.root_access");
-    if (data != NULL) {
-        len = strlen(data);
-        if (len >= PROPERTY_VALUE_MAX)
-            memcpy(enabled, "0", 2);
-        else
-            memcpy(enabled, data, len + 1);
-        free(data);
-    } else
-        memcpy(enabled, "0", 2);
-
-    /* enforce persist.sys.root_access on non-eng builds for apps */
+    /* Enforce persist.sys.root_access on non-eng builds for apps */
+    enabled = property_get_int32("persist.sys.root_access", 2);
+    property_get("ro.build.type", build_type, "");
     if (strcmp("eng", build_type) != 0 && from->uid != AID_SHELL && from->uid != AID_ROOT &&
-        (atoi(enabled) & LINEAGE_ROOT_ACCESS_APPS_ONLY) != LINEAGE_ROOT_ACCESS_APPS_ONLY) {
+        (enabled & LINEAGE_ROOT_ACCESS_APPS_ONLY) != LINEAGE_ROOT_ACCESS_APPS_ONLY) {
         ALOGE(
             "Apps root access is disabled by system setting - "
             "enable it under settings -> developer options");
@@ -328,7 +306,7 @@ int access_disabled(const struct su_initiator* from) {
 
     /* disallow su in a shell if appropriate */
     if (from->uid == AID_SHELL &&
-        (atoi(enabled) & LINEAGE_ROOT_ACCESS_ADB_ONLY) != LINEAGE_ROOT_ACCESS_ADB_ONLY) {
+        (enabled & LINEAGE_ROOT_ACCESS_ADB_ONLY) != LINEAGE_ROOT_ACCESS_ADB_ONLY) {
         ALOGE(
             "Shell root access is disabled by a system setting - "
             "enable it under settings -> developer options");
