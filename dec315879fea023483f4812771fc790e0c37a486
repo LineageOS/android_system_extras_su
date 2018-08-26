@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "67773b31_f64632a7",
+        "filename": "su.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 532,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2018-08-26T19:58:45Z",
+      "side": 1,
+      "message": "huh",
+      "range": {
+        "startLine": 531,
+        "startChar": 0,
+        "endLine": 532,
+        "endChar": 22
+      },
+      "revId": "dec315879fea023483f4812771fc790e0c37a486",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
