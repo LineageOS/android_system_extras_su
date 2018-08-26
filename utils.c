@@ -14,24 +14,23 @@
 ** limitations under the License.
 */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <limits.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "utils.h"
 
 /* reads a file, making sure it is terminated with \n \0 */
-char* read_file(const char *fn)
-{
+char* read_file(const char* fn) {
     struct stat st;
-    char *data = NULL;
+    char* data = NULL;
 
     int fd = open(fn, O_RDONLY);
     if (fd < 0) return data;
@@ -53,33 +52,31 @@ oops:
     return NULL;
 }
 
-int get_property(const char *data, char *found, const char *searchkey, const char *not_found)
-{
+int get_property(const char* data, char* found, const char* searchkey, const char* not_found) {
     char *key, *value, *eol, *sol, *tmp;
     if (data == NULL) goto defval;
     int matched = 0;
-    char *dup = strdup(data);
-    if (!dup)
-        goto defval;
+    char* dup = strdup(data);
+    if (!dup) goto defval;
 
     sol = dup;
-    while((eol = strchr(sol, '\n'))) {
+    while ((eol = strchr(sol, '\n'))) {
         key = sol;
         *eol++ = 0;
         sol = eol;
 
         value = strchr(key, '=');
-        if(value == 0) continue;
+        if (value == 0) continue;
         *value++ = 0;
 
-        while(isspace(*key)) key++;
-        if(*key == '#') continue;
+        while (isspace(*key)) key++;
+        if (*key == '#') continue;
         tmp = value - 2;
-        while((tmp > key) && isspace(*tmp)) *tmp-- = 0;
+        while ((tmp > key) && isspace(*tmp)) *tmp-- = 0;
 
-        while(isspace(*value)) value++;
+        while (isspace(*value)) value++;
         tmp = eol - 2;
-        while((tmp > value) && isspace(*tmp)) *tmp-- = 0;
+        while ((tmp > value) && isspace(*tmp)) *tmp-- = 0;
 
         if (strncmp(searchkey, key, strlen(searchkey)) == 0) {
             matched = 1;
@@ -90,10 +87,10 @@ int get_property(const char *data, char *found, const char *searchkey, const cha
     int len;
     if (matched) {
         len = strlen(value);
-        if (len >= PROPERTY_VALUE_MAX)
-            return -1;
+        if (len >= PROPERTY_VALUE_MAX) return -1;
         memcpy(found, value, len + 1);
-    } else goto defval;
+    } else
+        goto defval;
     return len;
 
 defval:
@@ -109,9 +106,7 @@ defval:
  * Assume nobody is stupid enough to put a propery with prefix ro.lineage.version
  * in his build.prop on a non-LineageOS ROM and comment it out.
  */
-int check_property(const char *data, const char *prefix)
-{
-    if (!data)
-        return 0;
+int check_property(const char* data, const char* prefix) {
+    if (!data) return 0;
     return strstr(data, prefix) != NULL;
 }
