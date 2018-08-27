@@ -1,6 +1,7 @@
 /*
 ** Copyright 2010, Adam Shanks (@ChainsDD)
 ** Copyright 2008, Zinx Verituse (@zinxv)
+** Copyright 2017-2018, The LineageOS Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -282,7 +283,7 @@ static __attribute__ ((noreturn)) void allow(struct su_context *ctx, const char 
 }
 
 /*
- * CyanogenMod-specific behavior
+ * Lineage-specific behavior
  *
  * we can't simply use the property service, since we aren't launched from init
  * and can't trust the location of the property workspace.
@@ -328,7 +329,7 @@ int access_disabled(const struct su_initiator *from) {
     /* enforce persist.sys.root_access on non-eng builds for apps */
     if (strcmp("eng", build_type) != 0 &&
             from->uid != AID_SHELL && from->uid != AID_ROOT &&
-            (atoi(enabled) & CM_ROOT_ACCESS_APPS_ONLY) != CM_ROOT_ACCESS_APPS_ONLY ) {
+            (atoi(enabled) & LINEAGE_ROOT_ACCESS_APPS_ONLY) != LINEAGE_ROOT_ACCESS_APPS_ONLY ) {
         ALOGE("Apps root access is disabled by system setting - "
              "enable it under settings -> developer options");
         return 1;
@@ -336,7 +337,7 @@ int access_disabled(const struct su_initiator *from) {
 
     /* disallow su in a shell if appropriate */
     if (from->uid == AID_SHELL &&
-            (atoi(enabled) & CM_ROOT_ACCESS_ADB_ONLY) != CM_ROOT_ACCESS_ADB_ONLY ) {
+            (atoi(enabled) & LINEAGE_ROOT_ACCESS_ADB_ONLY) != LINEAGE_ROOT_ACCESS_ADB_ONLY ) {
         ALOGE("Shell root access is disabled by a system setting - "
              "enable it under settings -> developer options");
         return 1;
