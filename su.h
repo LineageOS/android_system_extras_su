@@ -1,6 +1,7 @@
 /*
 ** Copyright 2010, Adam Shanks (@ChainsDD)
 ** Copyright 2008, Zinx Verituse (@zinxv)
+** Copyright 2017-2018, The LineageOS Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,11 +24,11 @@
 #endif
 #define LOG_TAG "su"
 
-// CyanogenMod-specific behavior
-#define CM_ROOT_ACCESS_DISABLED      0
-#define CM_ROOT_ACCESS_APPS_ONLY     1
-#define CM_ROOT_ACCESS_ADB_ONLY      2
-#define CM_ROOT_ACCESS_APPS_AND_ADB  3
+// Lineage-specific behavior
+#define LINEAGE_ROOT_ACCESS_DISABLED      0
+#define LINEAGE_ROOT_ACCESS_APPS_ONLY     1
+#define LINEAGE_ROOT_ACCESS_ADB_ONLY      2
+#define LINEAGE_ROOT_ACCESS_APPS_AND_ADB  3
 
 #define DAEMON_SOCKET_PATH "/dev/socket/su-daemon/"
 
