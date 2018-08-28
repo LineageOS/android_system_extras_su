@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d615742_7ecdfa0d",
+        "filename": "binder/appops-wrapper.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2018-08-28T07:01:51Z",
+      "side": 1,
+      "message": "Does this actually need to be a pointer? Can\u0027t this just be a regular stack-allocated variable and avoid all this?",
+      "range": {
+        "startLine": 12,
+        "startChar": 4,
+        "endLine": 12,
+        "endChar": 45
+      },
+      "revId": "81e6e0351245c3af2ddc66d24d1599bbd9b82b46",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d06eb70_9bf448ea",
+        "filename": "binder/pm-wrapper.c",
+        "patchSetId": 5
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2018-08-28T07:01:51Z",
+      "side": 1,
+      "message": "nit: char *package_name to align with the style in the rest of the function.",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 20,
+        "endChar": 22
+      },
+      "revId": "81e6e0351245c3af2ddc66d24d1599bbd9b82b46",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f8ff3d88_02b52d79",
+        "filename": "su.c",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2018-08-28T07:01:51Z",
+      "side": 1,
+      "message": "What kind of variable is this? Should the printf specifier just be changed?",
+      "range": {
+        "startLine": 79,
+        "startChar": 63,
+        "endLine": 79,
+        "endChar": 72
+      },
+      "revId": "81e6e0351245c3af2ddc66d24d1599bbd9b82b46",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
