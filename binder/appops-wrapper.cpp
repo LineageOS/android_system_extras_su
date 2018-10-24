@@ -11,7 +11,7 @@ int appops_start_op_su(int uid, const char *pkgName) {
     ALOGD("Checking whether app [uid:%d, pkgName: %s] is allowed to be root", uid, pkgName);
 
     AppOpsManager ops;
-    int mode = ops.startOp(AppOpsManager::OP_SU, uid, String16(pkgName));
+    int mode = ops.startOpNoThrow(AppOpsManager::OP_SU, uid, String16(pkgName), false);
     if (mode == AppOpsManager::MODE_ALLOWED) {
         ALOGD("Privilege elevation allowed by appops");
         return 0;
