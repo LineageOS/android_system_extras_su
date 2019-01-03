@@ -87,14 +87,18 @@ static int recv_fd(int sockfd) {
 
     struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg);
 
-    if (cmsg == NULL || cmsg->cmsg_len != CMSG_LEN(sizeof(int)) || cmsg->cmsg_level != SOL_SOCKET ||
+    if (cmsg == NULL ||
+        cmsg->cmsg_len != CMSG_LEN(sizeof(int)) ||
+        cmsg->cmsg_level != SOL_SOCKET ||
         cmsg->cmsg_type != SCM_RIGHTS) {
-    error:
-        ALOGE("unable to read fd");
-        exit(-1);
+        goto error;
     }
 
     return *(int*)CMSG_DATA(cmsg);
+
+error:
+    ALOGE("unable to read fd");
+    exit(-1);
 }
 
 /*
@@ -146,10 +150,15 @@ static void send_fd(int sockfd, int fd) {
     }
 
     if (sendmsg(sockfd, &msg, 0) != 1) {
-    error:
-        PLOGE("unable to send fd");
-        exit(-1);
+        goto error;
     }
+
+    return;
+
+error:
+    PLOGE("unable to send fd");
+    exit(-1);
+
 }
 
 static int read_int(int fd) {
@@ -354,9 +363,7 @@ static int daemon_accept(int fd) {
         }
 
         close(fd);
-    error:
-        ALOGD("child exited");
-        return code;
+        goto error;
     }
 
     // We are in the child now
@@ -424,6 +431,11 @@ static int daemon_accept(int fd) {
     }
     free(argv);
     return child_result;
+
+error:
+    ALOGD("child exited");
+    return code;
+
 }
 
 int run_daemon() {
