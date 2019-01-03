@@ -87,12 +87,13 @@ static int recv_fd(int sockfd) {
         cmsg->cmsg_len   != CMSG_LEN(sizeof(int)) ||
         cmsg->cmsg_level != SOL_SOCKET            ||
         cmsg->cmsg_type  != SCM_RIGHTS) {
-error:
-        ALOGE("unable to read fd");
-        exit(-1);
     }
 
     return *(int *)CMSG_DATA(cmsg);
+
+error:
+    ALOGE("unable to read fd");
+    exit(-1);
 }
 
 /*
@@ -144,10 +145,14 @@ static void send_fd(int sockfd, int fd) {
     }
 
     if (sendmsg(sockfd, &msg, 0) != 1) {
-error:
-        PLOGE("unable to send fd");
-        exit(-1);
+        goto error;
     }
+
+    return;
+
+error:
+    PLOGE("unable to send fd");
+    exit(-1);
 }
 
 static int read_int(int fd) {
@@ -291,7 +296,7 @@ static int daemon_accept(int fd) {
 
         // In parent, wait for the child to exit, and send the exit code
         // across the wire.
-        int status, code;
+        int code, status;
 
         free(pts_slave);
 
@@ -306,7 +311,7 @@ static int daemon_accept(int fd) {
         // Is the file descriptor actually open?
         if (fcntl(fd, F_GETFD) == -1) {
             if (errno != EBADF) {
-                goto error;
+                return code;
             }
         }
 
@@ -317,7 +322,6 @@ static int daemon_accept(int fd) {
         }
 
         close(fd);
-error:
         ALOGD("child exited");
         return code;
     }
